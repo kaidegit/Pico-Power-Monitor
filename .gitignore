@@ -1,0 +1,4 @@
+/tools/tool-openocd-raspberrypi/
+/tools/openocd/
+cmake-build-debug/
+.idea/
