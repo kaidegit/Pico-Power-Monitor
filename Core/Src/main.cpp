@@ -8,6 +8,7 @@
 #include "pico/stdlib.h"
 #include "elog.h"
 #include "config.h"
+#include "INA226.h"
 
 int main() {
 
@@ -25,10 +26,14 @@ int main() {
 
     elog_start();
 
+    auto ina = INA226();
+    ina.init();
+    ina.SetCalibration();
+
     while (true) {
-        elog_i("main", "HelloWorld");
-        elog_w("main", "HelloWorld");
-        elog_e("main", "HelloWorld");
-        sleep_ms(1000);
+        ina.GetVoltage();
+        ina.GetShuntVoltage();
+        ina.GetCurrent();
+        sleep_ms(5000);
     }
 }

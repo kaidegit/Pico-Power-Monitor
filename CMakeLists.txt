@@ -15,3 +15,4 @@ add_compile_options(-Wall
 add_subdirectory(Core)
 add_subdirectory(Components/EasyLogger)
 add_subdirectory(Components/Config)
+add_subdirectory(Components/INA226)
