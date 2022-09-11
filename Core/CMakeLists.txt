@@ -7,7 +7,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         )
 
 target_link_libraries(${PROJECT_NAME}
+        Config
         pico_stdlib
+        EasyLogger
         )
 
 target_link_options(pico_standard_link INTERFACE "LINKER:--print-memory-usage")
