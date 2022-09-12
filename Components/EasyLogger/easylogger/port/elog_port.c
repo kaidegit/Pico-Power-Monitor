@@ -30,6 +30,7 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "config.h"
+#include "hardware/timer.h"
 
 /**
  * EasyLogger port initialize
@@ -86,7 +87,7 @@ void elog_port_output_unlock(void) {
  */
 const char *elog_port_get_time(void) {
     static char cur_system_time[16] = "";
-//    snprintf(cur_system_time, 16, "%lu", osKernelGetTickCount());
+    snprintf(cur_system_time, 16, "%lu", time_us_32() / 1000);
     return cur_system_time;
 }
 

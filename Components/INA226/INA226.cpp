@@ -18,14 +18,28 @@ void INA226::init() {
     gpio_pull_up(INA_SCL);
 }
 
-void INA226::SetConfig() {
+void INA226::SetConfig(uint8_t average_time /*= 0x00*/, uint8_t vbus_conv_time /*= 0x04*/,
+                       uint8_t vshunt_conv_time /*= 0x04*/, uint8_t mode /*= 0x07*/) {
+    // 避免参数错误
+    average_time &= 0x07;
+    vbus_conv_time &= 0x07;
+    vshunt_conv_time &= 0x07;
+    mode &= 0x07;
 
+    uint16_t config =
+            0x4000 |
+            average_time << 9 |
+            vbus_conv_time << 6 |
+            vshunt_conv_time << 3 |
+            mode;
+
+    WriteU16(INA_CONFIG_REG, config);
 }
 
 void INA226::SetCalibration() {
     auto rshunt = 0.005f;     // 分压电阻5mohm
-    auto imax = 5;                  // 最大电流5A
-    current_LSB = float(imax) / 32767.0f * 1000;     // 电流分辨率mA
+    auto imax = 5.0f;                  // 最大电流5A
+    current_LSB = imax / 32767.0f * 1000;     // 电流分辨率mA
     auto val = 5.12f / (current_LSB * rshunt);
     WriteU16(INA_CALIBRATION_REG, uint16_t(val));
 }
@@ -34,8 +48,10 @@ void INA226::SetCalibration() {
 int32_t INA226::GetVoltage() const {
     auto mvol = float(int16_t(ReadU16(INA_BUS_VOLTAGE_REG)));
     mvol = mvol * voltage_LSB;
-    elog_i(TAG, "get voltage : %dmv", int(mvol));
-    return int(mvol);
+//    mvol = mvol + (mvol >> 2);
+    auto ret = int32_t(mvol);
+    elog_i(TAG, "get voltage : %dmv", ret);
+    return ret;
 }
 
 int32_t INA226::GetShuntVoltage() const {
