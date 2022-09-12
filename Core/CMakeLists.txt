@@ -13,6 +13,9 @@ target_link_libraries(${PROJECT_NAME}
         INA226
         )
 
+pico_set_float_implementation(${PROJECT_NAME} pico)
+pico_set_double_implementation(${PROJECT_NAME} pico)
+
 target_link_options(pico_standard_link INTERFACE "LINKER:--print-memory-usage")
 
 pico_add_extra_outputs(${PROJECT_NAME})

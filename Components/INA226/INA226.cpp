@@ -24,8 +24,8 @@ void INA226::SetConfig() {
 
 void INA226::SetCalibration() {
     auto rshunt = 0.005f;     // 分压电阻5mohm
-    auto imax = 5;                  // 最大电流5A
-    current_LSB = float(imax) / 32767.0f * 1000;     // 电流分辨率mA
+    auto imax = 5.0f;                  // 最大电流5A
+    current_LSB = imax / 32767.0f * 1000;     // 电流分辨率mA
     auto val = 5.12f / (current_LSB * rshunt);
     WriteU16(INA_CALIBRATION_REG, uint16_t(val));
 }
@@ -34,8 +34,10 @@ void INA226::SetCalibration() {
 int32_t INA226::GetVoltage() const {
     auto mvol = float(int16_t(ReadU16(INA_BUS_VOLTAGE_REG)));
     mvol = mvol * voltage_LSB;
-    elog_i(TAG, "get voltage : %dmv", int(mvol));
-    return int(mvol);
+//    mvol = mvol + (mvol >> 2);
+    auto ret = int32_t(mvol);
+    elog_i(TAG, "get voltage : %dmv", ret);
+    return ret;
 }
 
 int32_t INA226::GetShuntVoltage() const {
