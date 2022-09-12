@@ -19,7 +19,10 @@ public:
         ST7735_FillRectangle(x, y, w, h, color);
     }
 
-};
+    void Show(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint16_t *data) {
+        ST7735_DrawImage(x, y, w, h, data);
+    }
 
+};
 
 #endif //PICO_POWER_MONITOR_SCREEN_H
