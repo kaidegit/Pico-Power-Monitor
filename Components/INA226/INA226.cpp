@@ -18,8 +18,22 @@ void INA226::init() {
     gpio_pull_up(INA_SCL);
 }
 
-void INA226::SetConfig() {
+void INA226::SetConfig(uint8_t average_time /*= 0x00*/, uint8_t vbus_conv_time /*= 0x04*/,
+                       uint8_t vshunt_conv_time /*= 0x04*/, uint8_t mode /*= 0x07*/) {
+    // 避免参数错误
+    average_time &= 0x07;
+    vbus_conv_time &= 0x07;
+    vshunt_conv_time &= 0x07;
+    mode &= 0x07;
 
+    uint16_t config =
+            0x4000 |
+            average_time << 9 |
+            vbus_conv_time << 6 |
+            vshunt_conv_time << 3 |
+            mode;
+
+    WriteU16(INA_CONFIG_REG, config);
 }
 
 void INA226::SetCalibration() {

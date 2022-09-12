@@ -28,12 +28,13 @@ int main() {
 
     auto ina = INA226();
     ina.init();
+    ina.SetConfig();
     ina.SetCalibration();
 
     while (true) {
         ina.GetVoltage();
-        ina.GetShuntVoltage();
+//        ina.GetShuntVoltage();
         ina.GetCurrent();
-        sleep_ms(5000);
+        sleep_ms(1000);
     }
 }
