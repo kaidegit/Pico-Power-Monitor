@@ -9,6 +9,7 @@
 #include "elog.h"
 #include "config.h"
 #include "INA226.h"
+#include "Screen.h"
 
 int main() {
 
@@ -30,6 +31,10 @@ int main() {
     ina.init();
     ina.SetConfig();
     ina.SetCalibration();
+
+    auto screen = Screen();
+    screen.init();
+    screen.Fill(0,0,50,50,0x0FF0);
 
     while (true) {
         ina.GetVoltage();

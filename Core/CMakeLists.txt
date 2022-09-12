@@ -11,6 +11,7 @@ target_link_libraries(${PROJECT_NAME}
         pico_stdlib
         EasyLogger
         INA226
+        Screen
         )
 
 pico_set_float_implementation(${PROJECT_NAME} pico)

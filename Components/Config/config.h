@@ -20,4 +20,13 @@
 #define FUSB_SDA 22
 #define FUSB_SCL 23
 
+// ST7735
+#define SCREEN_SPI_NUM spi0
+#define SCREEN_CS 17
+#define SCREEN_CLK 18
+#define SCREEN_MOSI 19
+#define SCREEN_RES 21
+// TODO 暂时飞线到IO0
+#define SCREEN_DC 0
+
 #endif //PICO_POWER_MONITOR_CONFIG_H

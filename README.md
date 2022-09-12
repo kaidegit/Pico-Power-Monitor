@@ -13,13 +13,14 @@
 - [ ] FreeRTOS移植
 - [x] INA226
 - [ ] FUSB302
-- [ ] TFT-LCD
+- [x] TFT-LCD
 - [ ] LVGL
 - [ ] 诱骗输出
 
 ## 三方库许可说明
 
 * EasyLogger：使用MIT协议开源
+* Screen：基于仓库`afiskon/stm32-st7735`二次开发。此仓库使用了部分`Adafruit ST7735 library`的初始化代码。这两个仓库均以MIT开源
 
 
 
