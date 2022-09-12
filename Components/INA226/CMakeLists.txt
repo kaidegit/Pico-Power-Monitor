@@ -12,5 +12,5 @@ target_link_libraries(INA226
         Config
         pico_stdlib
         EasyLogger
-        hardware_i2c
+        I2C_Base
         )

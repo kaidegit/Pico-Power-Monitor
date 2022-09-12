@@ -7,12 +7,12 @@
 
 #include <cstdint>
 #include "elog.h"
+#include "i2c_base.h"
+#include "config.h"
 
-class INA226 {
+class INA226 : public I2C_Base {
 public:
-    INA226(uint8_t _addr = 0x40) : addr(_addr) {};
-
-    ~INA226() = default;
+    INA226(uint8_t _addr = 0x40) : I2C_Base(INA_I2C_NUM, _addr) {};
 
     void init();
 
@@ -28,18 +28,8 @@ public:
     int32_t GetCurrent() const;
 
 private:
-    uint8_t addr;
-
-    float current_LSB;           // 电流分辨率mA
+    float current_LSB = 0;           // 电流分辨率mA
     float voltage_LSB = 1.25;    // 电压分辨率1.25mV
-
-    uint8_t ReadU8(uint8_t reg_addr) const;
-
-    uint16_t ReadU16(uint8_t reg_addr) const;
-
-    void WriteU8(uint8_t reg_addr, uint8_t value) const;
-
-    void WriteU16(uint8_t reg_addr, uint16_t value) const;
 };
 
 #endif //PICO_POWER_MONITOR_INA226_H
