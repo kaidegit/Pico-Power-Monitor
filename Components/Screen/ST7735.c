@@ -198,10 +198,6 @@ void ST7735_FillScreen(uint16_t color) {
     ST7735_FillRectangle(0, 0, ST7735_WIDTH, ST7735_HEIGHT, color);
 }
 
-void ST7735_FillScreenFast(uint16_t color) {
-    ST7735_FillRectangleFast(0, 0, ST7735_WIDTH, ST7735_HEIGHT, color);
-}
-
 void ST7735_DrawImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint16_t *data) {
     if ((x >= ST7735_WIDTH) || (y >= ST7735_HEIGHT)) return;
     if ((x + w - 1) >= ST7735_WIDTH) return;

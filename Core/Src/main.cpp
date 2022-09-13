@@ -10,6 +10,29 @@
 #include "config.h"
 #include "INA226.h"
 #include "Screen.h"
+#include "FreeRTOS.h"
+#include "task.h"
+
+auto ina = INA226();
+
+auto screen = Screen();
+
+void main_task(void *para) {
+    while (1) {
+        ina.GetVoltage();
+//        ina.GetShuntVoltage();
+        ina.GetCurrent();
+        vTaskDelay(1000);
+    }
+
+}
+
+void log_task(void* para) {
+    while (1) {
+        log_i("test", "log thread");
+        vTaskDelay(2000);
+    }
+}
 
 int main() {
 
@@ -27,19 +50,21 @@ int main() {
 
     elog_start();
 
-    auto ina = INA226();
+
     ina.init();
     ina.SetConfig();
     ina.SetCalibration();
 
-    auto screen = Screen();
     screen.init();
-    screen.Fill(0,0,50,50,0x0FF0);
+    screen.Fill(0, 0, 50, 50, 0x0FF0);
+
+    xTaskCreate(main_task, "TestMainThread", 1024, NULL, 5, NULL);
+    xTaskCreate(log_task, "log", 1024, NULL, 6, NULL);
+
+    vTaskStartScheduler();
 
     while (true) {
-        ina.GetVoltage();
-//        ina.GetShuntVoltage();
-        ina.GetCurrent();
+        elog_i("ERROR", "FreeRTOS Crashed");
         sleep_ms(1000);
     }
 }

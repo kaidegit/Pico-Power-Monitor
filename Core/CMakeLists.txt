@@ -9,6 +9,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 target_link_libraries(${PROJECT_NAME}
         Config
         pico_stdlib
+        FreeRTOS-Kernel-Heap4
         EasyLogger
         INA226
         Screen

@@ -4,6 +4,8 @@ include(pico_sdk_import.cmake)
 
 project(pico-power-monitor)
 
+include(Components/FreeRTOS-Kernel/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.cmake)
+
 pico_sdk_init()
 
 add_compile_options(-Wall
