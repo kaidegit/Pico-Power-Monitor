@@ -23,6 +23,8 @@ public:
         ST7735_DrawImage(x, y, w, h, data);
     }
 
+    uint8_t width =  ST7735_WIDTH;
+    uint8_t height =  ST7735_HEIGHT;
 };
 
 #endif //PICO_POWER_MONITOR_SCREEN_H

@@ -13,6 +13,7 @@ target_link_libraries(${PROJECT_NAME}
         EasyLogger
         INA226
         Screen
+        lvgl_port
         )
 
 pico_set_float_implementation(${PROJECT_NAME} pico)

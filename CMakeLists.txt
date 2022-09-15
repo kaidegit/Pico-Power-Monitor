@@ -18,9 +18,14 @@ add_compile_options(-Wall
 
 #message("freertos config is here ${FREERTOS_CONFIG_FILE_DIRECTORY}")
 
+#set(LV_CONF_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Components/lvgl_port)
+
 add_subdirectory(Core)
 add_subdirectory(Components/EasyLogger)
 add_subdirectory(Components/Config)
 add_subdirectory(Components/I2C_Base)
 add_subdirectory(Components/INA226)
 add_subdirectory(Components/Screen)
+add_subdirectory(Components/lvgl)
+add_subdirectory(Components/lvgl_port)
+add_subdirectory(Components/SLS_Gen)

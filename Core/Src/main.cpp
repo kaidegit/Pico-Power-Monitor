@@ -17,8 +17,6 @@ static const char *TAG = "main";
 
 auto ina = INA226();
 
-auto screen = Screen();
-
 void main_task(void *para) {
     ina.init();
     ina.SetConfig();
@@ -33,6 +31,13 @@ void main_task(void *para) {
 }
 
 extern "C" void log_entry(void *para);
+
+void lvgl_thread(void *para);
+
+void vApplicationStackOverflowHook(
+        TaskHandle_t xTask, char *pcTaskName) {
+    elog_e(TAG, "stack over flow!");
+}
 
 int main() {
 
@@ -50,16 +55,14 @@ int main() {
 
     elog_start();
 
-    screen.init();
-
     xTaskCreate(
             main_task,
             "main",
             1024,
             nullptr,
-            5,
+            4,
             nullptr
-            );
+    );
 
     xTaskCreate(
             log_entry,
@@ -68,7 +71,16 @@ int main() {
             nullptr,
             6,
             nullptr
-            );
+    );
+
+    xTaskCreate(
+            lvgl_thread,
+            "lvgl",
+            4096,
+            nullptr,
+            5,
+            nullptr
+    );
 
     vTaskStartScheduler();
 //  ----------- should not run to here -----------
