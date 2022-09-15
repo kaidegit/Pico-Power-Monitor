@@ -21,6 +21,7 @@
 
 * EasyLogger：使用MIT协议开源
 * Screen：基于仓库`afiskon/stm32-st7735`二次开发。此仓库使用了部分`Adafruit ST7735 library`的初始化代码。这两个仓库均以MIT开源
+* FreeRTOS：主仓库使用MIT协议开源，树莓派团队适配部分使用BSD协议开源
 
 
 
