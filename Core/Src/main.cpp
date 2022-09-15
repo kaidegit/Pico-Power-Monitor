@@ -13,6 +13,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+static const char* TAG = "main";
+
 auto ina = INA226();
 
 auto screen = Screen();
@@ -22,6 +24,8 @@ void main_task(void *para) {
         ina.GetVoltage();
 //        ina.GetShuntVoltage();
         ina.GetCurrent();
+        elog_i(TAG, "hello1");
+        elog_i(TAG, "hello2");
         vTaskDelay(1000);
     }
 }

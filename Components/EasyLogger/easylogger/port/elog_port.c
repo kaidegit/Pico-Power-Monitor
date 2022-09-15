@@ -31,6 +31,8 @@
 #include "pico/stdlib.h"
 #include "config.h"
 #include "hardware/timer.h"
+#include "hardware/dma.h"
+#include "hardware/irq.h"
 #include "freertos.h"
 #include "task.h"
 #include "semphr.h"
@@ -39,6 +41,13 @@ SemaphoreHandle_t elog_lock;
 SemaphoreHandle_t elog_async;
 SemaphoreHandle_t elog_dma_lock;
 
+int log_dma_chan;
+dma_channel_config log_dma_config;
+
+void dma_handler() {
+    dma_hw->ints0 = 1u << log_dma_chan;
+    xSemaphoreGiveFromISR(elog_dma_lock, NULL);
+}
 
 /**
  * EasyLogger port initialize
@@ -58,6 +67,26 @@ ElogErrCode elog_port_init(void) {
     elog_dma_lock = xSemaphoreCreateBinary();
     xSemaphoreGive(elog_dma_lock);
 
+    log_dma_chan = dma_claim_unused_channel(true);
+    log_dma_config = dma_channel_get_default_config(log_dma_chan);
+    channel_config_set_transfer_data_size(&log_dma_config, DMA_SIZE_8);
+    channel_config_set_read_increment(&log_dma_config, true);
+    channel_config_set_write_increment(&log_dma_config, false);
+    channel_config_set_dreq(&log_dma_config, DREQ_UART0_TX);
+
+    dma_channel_set_irq0_enabled(log_dma_chan, true);
+    irq_set_exclusive_handler(DMA_IRQ_0, dma_handler);
+    irq_set_enabled(DMA_IRQ_0, true);
+
+    dma_channel_configure(
+            log_dma_chan,          // Channel to be configured
+            &log_dma_config,            // The configuration we just created
+            (volatile void *)UART0_BASE,           // The initial write address
+            NULL,           // The initial read address
+            0, // Number of transfers; in this case each is 1 byte.
+            true           // Start immediately.
+    );
+
     return result;
 }
 
@@ -76,8 +105,12 @@ void elog_port_deinit(void) {
  * @param size log size
  */
 void elog_port_output(const char *log, size_t size) {
-    uart_write_blocking(LOG_UART_NUM, (const uint8_t *)log, size);
-    xSemaphoreGive(elog_dma_lock);
+    dma_channel_set_read_addr(log_dma_chan, log, false);
+    dma_channel_set_trans_count(log_dma_chan, size,true);
+
+//    dma_channel_wait_for_finish_blocking(log_dma_chan);
+//    uart_write_blocking(LOG_UART_NUM, (const uint8_t *)log, size);
+//    xSemaphoreGive(elog_dma_lock);
 }
 
 /**

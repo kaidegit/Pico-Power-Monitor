@@ -12,16 +12,6 @@ target_link_libraries(EasyLogger
         Config
         pico_stdlib
         FreeRTOS-Kernel-Heap4
+        hardware_dma
+        hardware_irq
         )
-
-
-#
-#add_executable(${PROJECT_NAME} ${FILES})
-#
-#target_include_directories(${PROJECT_NAME} PUBLIC
-#        ${CMAKE_CURRENT_SOURCE_DIR}/easylogger/inc
-#        )
-#
-#target_link_libraries(${PROJECT_NAME}
-#        pico_stdlib
-#        )

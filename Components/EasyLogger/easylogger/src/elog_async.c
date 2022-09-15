@@ -81,7 +81,7 @@ static pthread_t async_output_thread;
 /* Initialize OK flag */
 static bool init_ok = false;
 /* thread running flag */
-static bool thread_running = false;
+//static bool thread_running = false;
 /* asynchronous output mode enabled flag */
 static bool is_enabled = false;
 /* asynchronous output mode's ring buffer */
