@@ -9,12 +9,12 @@
 ## TODO List
 
 - [x] EasyLogger移植
-- [ ] Log通过DMA发送
-- [ ] FreeRTOS移植
+- [x] Log通过DMA发送
+- [x] FreeRTOS移植
 - [x] INA226
 - [ ] FUSB302
 - [x] TFT-LCD
-- [ ] LVGL
+- [x] LVGL
 - [ ] 诱骗输出
 
 ## 三方库许可说明
@@ -22,6 +22,7 @@
 * EasyLogger：使用MIT协议开源
 * Screen：基于仓库`afiskon/stm32-st7735`二次开发。此仓库使用了部分`Adafruit ST7735 library`的初始化代码。这两个仓库均以MIT开源
 * FreeRTOS：主仓库使用MIT协议开源，树莓派团队适配部分使用BSD协议开源
+* LVGL：使用MIT协议开源
 
 
 
