@@ -13,19 +13,21 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-static const char* TAG = "main";
+static const char *TAG = "main";
 
 auto ina = INA226();
 
 auto screen = Screen();
 
 void main_task(void *para) {
+    ina.init();
+    ina.SetConfig();
+    ina.SetCalibration();
+
     while (1) {
         ina.GetVoltage();
 //        ina.GetShuntVoltage();
         ina.GetCurrent();
-        elog_i(TAG, "hello1");
-        elog_i(TAG, "hello2");
         vTaskDelay(1000);
     }
 }
@@ -48,19 +50,28 @@ int main() {
 
     elog_start();
 
-
-    ina.init();
-    ina.SetConfig();
-    ina.SetCalibration();
-
     screen.init();
-    screen.Fill(0, 0, 50, 50, 0x0FF0);
 
-    xTaskCreate(main_task, "TestMainThread", 1024, NULL, 5, NULL);
-    xTaskCreate(log_entry, "log", 1024, NULL, 6, NULL);
+    xTaskCreate(
+            main_task,
+            "main",
+            1024,
+            nullptr,
+            5,
+            nullptr
+            );
+
+    xTaskCreate(
+            log_entry,
+            "log",
+            1024,
+            nullptr,
+            6,
+            nullptr
+            );
 
     vTaskStartScheduler();
-
+//  ----------- should not run to here -----------
     while (true) {
         elog_i("ERROR", "FreeRTOS Crashed");
         sleep_ms(1000);
