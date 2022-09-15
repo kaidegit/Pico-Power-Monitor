@@ -4,6 +4,8 @@ include(pico_sdk_import.cmake)
 
 project(pico-power-monitor)
 
+set(FREERTOS_CONFIG_FILE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Core/Inc)
+
 include(Components/FreeRTOS-Kernel/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.cmake)
 
 pico_sdk_init()
@@ -13,6 +15,8 @@ add_compile_options(-Wall
         -Wno-unused-function # we have some for the docs that aren't called
         -Wno-maybe-uninitialized
         )
+
+#message("freertos config is here ${FREERTOS_CONFIG_FILE_DIRECTORY}")
 
 add_subdirectory(Core)
 add_subdirectory(Components/EasyLogger)

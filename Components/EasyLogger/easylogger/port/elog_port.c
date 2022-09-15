@@ -31,6 +31,14 @@
 #include "pico/stdlib.h"
 #include "config.h"
 #include "hardware/timer.h"
+#include "freertos.h"
+#include "task.h"
+#include "semphr.h"
+
+SemaphoreHandle_t elog_lock;
+SemaphoreHandle_t elog_async;
+SemaphoreHandle_t elog_dma_lock;
+
 
 /**
  * EasyLogger port initialize
@@ -40,7 +48,15 @@
 ElogErrCode elog_port_init(void) {
     ElogErrCode result = ELOG_NO_ERR;
 
-    /* add your code here */
+    elog_lock = xSemaphoreCreateBinary();
+    xSemaphoreGive(elog_lock);
+
+    elog_async = xSemaphoreCreateBinary();
+    xSemaphoreGive(elog_async);
+    xSemaphoreTake(elog_async, 0);
+
+    elog_dma_lock = xSemaphoreCreateBinary();
+    xSemaphoreGive(elog_dma_lock);
 
     return result;
 }
@@ -50,9 +66,7 @@ ElogErrCode elog_port_init(void) {
  *
  */
 void elog_port_deinit(void) {
-
     /* add your code here */
-
 }
 
 /**
@@ -63,21 +77,21 @@ void elog_port_deinit(void) {
  */
 void elog_port_output(const char *log, size_t size) {
     uart_write_blocking(LOG_UART_NUM, (const uint8_t *)log, size);
-//    HAL_UART_Transmit_DMA(&huart4, (uint8_t *) log, size);
+    xSemaphoreGive(elog_dma_lock);
 }
 
 /**
  * output lock
  */
 void elog_port_output_lock(void) {
-//    osSemaphoreAcquire(elog_lockHandle, osWaitForever);
+    xSemaphoreTake(elog_lock, portMAX_DELAY);
 }
 
 /**
  * output unlock
  */
 void elog_port_output_unlock(void) {
-//    osSemaphoreRelease(elog_lockHandle);
+    xSemaphoreGive(elog_lock);
 }
 
 /**
@@ -109,49 +123,29 @@ const char *elog_port_get_t_info(void) {
     return "";
 }
 
-//void elog_async_output_notice(void) {
-//    osSemaphoreRelease(elog_asyncHandle);
-//}
-//
-//void log_entry(void *para) {
-//    size_t get_log_size = 0;
-//    static char poll_get_buf[ELOG_LINE_BUF_SIZE - 4];
-//
-//    if (elog_port_init() != ELOG_NO_ERR) {
-//        goto fail;
-//    }
-//
-////    elog_init();
-////
-////    elog_set_fmt(ELOG_LVL_ASSERT, ELOG_FMT_ALL & ~ELOG_FMT_P_INFO);
-////    elog_set_fmt(ELOG_LVL_ERROR, ELOG_FMT_LVL | ELOG_FMT_TAG | ELOG_FMT_TIME);
-////    elog_set_fmt(ELOG_LVL_WARN, ELOG_FMT_LVL | ELOG_FMT_TAG | ELOG_FMT_TIME);
-////    elog_set_fmt(ELOG_LVL_INFO, ELOG_FMT_LVL | ELOG_FMT_TAG | ELOG_FMT_TIME);
-////    elog_set_fmt(ELOG_LVL_DEBUG, ELOG_FMT_ALL & ~(ELOG_FMT_FUNC | ELOG_FMT_P_INFO));
-////    elog_set_fmt(ELOG_LVL_VERBOSE, ELOG_FMT_ALL & ~(ELOG_FMT_FUNC | ELOG_FMT_P_INFO));
-////
-////    elog_start();
-//
-//    while (1) {
-//        if (osOK ==
-//            osSemaphoreAcquire(elog_asyncHandle, osWaitForever)) {
-//            while (1) {
-//                if (osOK ==
-//                    osSemaphoreAcquire(elog_dma_lockHandle, osWaitForever)) {
-//                    get_log_size = elog_async_get_line_log(poll_get_buf, sizeof(poll_get_buf));
-//                    if (get_log_size) {
-//                        elog_port_output(poll_get_buf, get_log_size);
-//                    } else {
-//                        osSemaphoreRelease(elog_dma_lockHandle);
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//
-//    }
-//
-//    fail:
-//    osThreadExit();
-//
-//}
+void elog_async_output_notice(void) {
+    xSemaphoreGive(elog_async);
+}
+
+void log_entry(void *para) {
+    size_t get_log_size = 0;
+    static char poll_get_buf[ELOG_LINE_BUF_SIZE - 4];
+
+    if (elog_port_init() != ELOG_NO_ERR) {
+        goto fail;
+    }
+    while (xSemaphoreTake(elog_async, portMAX_DELAY) == pdTRUE) {
+        while (xSemaphoreTake(elog_dma_lock, portMAX_DELAY) == pdTRUE) {
+            get_log_size = elog_async_get_line_log(poll_get_buf, sizeof(poll_get_buf));
+            if (get_log_size) {
+                elog_port_output(poll_get_buf, get_log_size);
+            } else {
+                xSemaphoreGive(elog_dma_lock);
+                break;
+            }
+        }
+    }
+
+    fail:
+    vTaskDelete(NULL);
+}

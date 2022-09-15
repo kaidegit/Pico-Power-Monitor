@@ -24,15 +24,9 @@ void main_task(void *para) {
         ina.GetCurrent();
         vTaskDelay(1000);
     }
-
 }
 
-void log_task(void* para) {
-    while (1) {
-        log_i("test", "log thread");
-        vTaskDelay(2000);
-    }
-}
+extern "C" void log_entry(void *para);
 
 int main() {
 
@@ -59,7 +53,7 @@ int main() {
     screen.Fill(0, 0, 50, 50, 0x0FF0);
 
     xTaskCreate(main_task, "TestMainThread", 1024, NULL, 5, NULL);
-    xTaskCreate(log_task, "log", 1024, NULL, 6, NULL);
+    xTaskCreate(log_entry, "log", 1024, NULL, 6, NULL);
 
     vTaskStartScheduler();
 

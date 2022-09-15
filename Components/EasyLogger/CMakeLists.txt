@@ -11,6 +11,7 @@ target_include_directories(EasyLogger PUBLIC
 target_link_libraries(EasyLogger
         Config
         pico_stdlib
+        FreeRTOS-Kernel-Heap4
         )
 
 
