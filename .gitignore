@@ -2,3 +2,5 @@
 /tools/openocd/
 cmake-build-debug/
 .idea/
+
+/GUI/backup/

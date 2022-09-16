@@ -1,10 +1,10 @@
 // SquareLine LVGL GENERATED FILE
 // EDITOR VERSION: SquareLine Studio 1.1.0
 // LVGL VERSION: 8.2
-// PROJECT: SquareLine_Project
+// PROJECT: Monitor_UI
 
-#ifndef _SQUARELINE_PROJECT_UI_H
-#define _SQUARELINE_PROJECT_UI_H
+#ifndef _MONITOR_UI_UI_H
+#define _MONITOR_UI_UI_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,9 +23,7 @@ extern "C" {
 #endif
 
 extern lv_obj_t * ui_Screen1;
-extern lv_obj_t * ui_voltage;
-extern lv_obj_t * ui_current;
-extern lv_obj_t * ui_power;
+extern lv_obj_t * ui_Label1;
 
 
 
