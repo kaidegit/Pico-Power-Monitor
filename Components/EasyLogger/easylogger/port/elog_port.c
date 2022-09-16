@@ -81,10 +81,10 @@ ElogErrCode elog_port_init(void) {
     dma_channel_configure(
             log_dma_chan,          // Channel to be configured
             &log_dma_config,            // The configuration we just created
-            (volatile void *)UART0_BASE,           // The initial write address
+            &uart_get_hw(LOG_UART_NUM)->dr,         // The initial write address
             NULL,           // The initial read address
             0, // Number of transfers; in this case each is 1 byte.
-            true           // Start immediately.
+            false           // Start immediately.
     );
 
     return result;
@@ -106,7 +106,7 @@ void elog_port_deinit(void) {
  */
 void elog_port_output(const char *log, size_t size) {
     dma_channel_set_read_addr(log_dma_chan, log, false);
-    dma_channel_set_trans_count(log_dma_chan, size,true);
+    dma_channel_set_trans_count(log_dma_chan, size, true);
 
 //    dma_channel_wait_for_finish_blocking(log_dma_chan);
 //    uart_write_blocking(LOG_UART_NUM, (const uint8_t *)log, size);

@@ -2,9 +2,11 @@
 // Created by yekai on 2022/9/15.
 //
 
+#include "config.h"
 #include "lvgl_port.h"
 #include "lvgl.h"
 #include "Screen.h"
+#include "hardware/spi.h"
 #include "ui.h"
 #include "FreeRTOS.h"
 #include "task.h"
@@ -15,6 +17,7 @@ uint8_t lvgl_draw_buff1[2560] = {0};
 uint8_t lvgl_draw_buff2[2560] = {0};
 
 SemaphoreHandle_t lv_lock = NULL;
+SemaphoreHandle_t screen_dma_idle = NULL;
 
 void lv_lock_init() {
     lv_lock = xSemaphoreCreateBinary();
@@ -29,10 +32,20 @@ void lv_clr_lock() {
     xSemaphoreGive(lv_lock);
 }
 
+void screen_dma_handler() {
+    dma_hw->ints1 = 1u << screen.screen_dma_chan;
+    xSemaphoreGiveFromISR(screen_dma_idle, NULL);
+    // wait until fifo is clear.
+    while (spi_is_busy(SCREEN_SPI_NUM));
+    ST7735_Unselect();
+}
+
 static void disp_flush(lv_disp_drv_t *disp_drv, const lv_area_t *area, lv_color_t *color_p) {
+    // 等待上次传输完成
+    xSemaphoreTake(screen_dma_idle, portMAX_DELAY);
     /* 启动新的传输 */
     auto width(area->x2 - area->x1 + 1), height(area->y2 - area->y1 + 1);
-    screen.Show(area->x1, area->y1, width, height, (const uint16_t *) color_p);
+    screen.DMAShow(area->x1, area->y1, width, height, (const uint16_t *) color_p);
     /* 通知lvgl传输已完成 */
     lv_disp_flush_ready(disp_drv);
 }
@@ -43,6 +56,9 @@ void lvgl_thread(void *para) {
 
     lv_init();
     screen.init();
+    screen.initDMA();
+    screen_dma_idle = xSemaphoreCreateBinary();
+    xSemaphoreGive(screen_dma_idle);
 
     // 向lvgl注册缓冲区
     static lv_disp_draw_buf_t draw_buf_dsc;

@@ -12,4 +12,8 @@ target_link_libraries(Screen
         pico_stdlib
         Config
         hardware_spi
+        hardware_dma
+        hardware_irq
+        lvgl_port
+        EasyLogger
         )
