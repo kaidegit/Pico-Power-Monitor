@@ -14,6 +14,7 @@ target_link_libraries(${PROJECT_NAME}
         INA226
         Screen
         lvgl_port
+        Filter
         )
 
 pico_set_float_implementation(${PROJECT_NAME} pico)

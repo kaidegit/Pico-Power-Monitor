@@ -16,7 +16,7 @@ void Screen::init() {
     gpio_init(SCREEN_RES);
     gpio_set_dir(SCREEN_RES, GPIO_OUT);
 
-    spi_init(SCREEN_SPI_NUM, 1 * 1000 * 1000);
+    spi_init(SCREEN_SPI_NUM, 15 * 1000 * 1000);
     gpio_set_function(SCREEN_CLK,GPIO_FUNC_SPI);
     gpio_set_function(SCREEN_MOSI, GPIO_FUNC_SPI);
 

@@ -16,7 +16,7 @@ public:
 
     void init();
 
-    void SetConfig(uint8_t average_time = 0x00, uint8_t vbus_conv_time = 0x04,
+    void SetConfig(uint8_t average_time = 0x02, uint8_t vbus_conv_time = 0x04,
                    uint8_t vshunt_conv_time = 0x04, uint8_t mode = 0x07);
 
     void SetCalibration();
