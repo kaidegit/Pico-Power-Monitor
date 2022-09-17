@@ -23,11 +23,17 @@ extern "C" {
 #endif
 
 extern lv_obj_t * ui_Screen1;
-extern lv_obj_t * ui_Label1;
+extern lv_obj_t * ui_Voltage;
+extern lv_obj_t * ui_Current;
+extern lv_obj_t * ui_Power;
 
 
 
 
+LV_FONT_DECLARE(ui_font_SourceHanMono16);
+LV_FONT_DECLARE(ui_font_SourceHanMono20);
+LV_FONT_DECLARE(ui_font_SourceHanSan16);
+LV_FONT_DECLARE(ui_font_SourceHanSan20);
 
 
 void ui_init(void);

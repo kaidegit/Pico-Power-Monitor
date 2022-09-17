@@ -1,0 +1,16 @@
+{
+  "codename": "SourceHanMono20",
+  "ttf_path": "\\assets\\SourceHanMono-Normal.otf",
+  "bin_path": "\\assets\\ui_font_SourceHanMono20.bin",
+  "c_path": "\\assets\\ui_font_SourceHanMono20.c",
+  "cfg_path": "\\assets\\ui_font_SourceHanMono20.fcfg",
+  "size": 20,
+  "bpp": 8,
+  "letters": 0,
+  "ranges": [
+    "0x20-0x7f"
+  ],
+  "symbols": "",
+  "customparams": "--no-compress --no-prefilter",
+  "uploaded": false
+}

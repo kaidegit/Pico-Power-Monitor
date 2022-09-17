@@ -50,14 +50,14 @@ int32_t INA226::GetVoltage() const {
     mvol = mvol * voltage_LSB;
 //    mvol = mvol + (mvol >> 2);
     auto ret = int32_t(mvol);
-    elog_i(TAG, "get voltage : %dmv", ret);
+//    elog_i(TAG, "get voltage : %dmv", ret);
     return ret;
 }
 
 int32_t INA226::GetShuntVoltage() const {
     auto uvol = int16_t(ReadU16(INA_SHUNT_VOLTAGE_REG));
     uvol = uvol * 25 / 10;
-    elog_i(TAG, "get shunt voltage : %duv", uvol);
+//    elog_i(TAG, "get shunt voltage : %duv", uvol);
     return uvol;
 }
 
@@ -65,7 +65,7 @@ int32_t INA226::GetCurrent() const {
     auto mamp = float(int16_t(ReadU16(INA_CURRENT_REG)));
     mamp *= current_LSB;
     auto ret = int32_t(mamp);
-    elog_i(TAG, "get current : %dmA", ret);
+//    elog_i(TAG, "get current : %dmA", ret);
     return ret;
 }
 

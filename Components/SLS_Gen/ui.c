@@ -8,7 +8,9 @@
 
 ///////////////////// VARIABLES ////////////////////
 lv_obj_t * ui_Screen1;
-lv_obj_t * ui_Label1;
+lv_obj_t * ui_Voltage;
+lv_obj_t * ui_Current;
+lv_obj_t * ui_Power;
 
 ///////////////////// TEST LVGL SETTINGS ////////////////////
 #if LV_COLOR_DEPTH != 16
@@ -28,11 +30,32 @@ void ui_Screen1_screen_init(void)
     ui_Screen1 = lv_obj_create(NULL);
     lv_obj_clear_flag(ui_Screen1, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
 
-    ui_Label1 = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_Label1, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label1, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_align(ui_Label1, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label1, "HelloWorld");
+    ui_Voltage = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_Voltage, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_Voltage, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_Voltage, -30);
+    lv_obj_set_y(ui_Voltage, -25);
+    lv_obj_set_align(ui_Voltage, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_Voltage, "0.0000V");
+    lv_obj_set_style_text_font(ui_Voltage, &ui_font_SourceHanMono20, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_Current = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_Current, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_Current, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_Current, -30);
+    lv_obj_set_y(ui_Current, 0);
+    lv_obj_set_align(ui_Current, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_Current, "0.0000A");
+    lv_obj_set_style_text_font(ui_Current, &ui_font_SourceHanMono20, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_Power = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_Power, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_Power, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_Power, -30);
+    lv_obj_set_y(ui_Power, 25);
+    lv_obj_set_align(ui_Power, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_Power, "0.0000W");
+    lv_obj_set_style_text_font(ui_Power, &ui_font_SourceHanMono20, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 }
 
