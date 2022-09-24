@@ -7,10 +7,12 @@
 #include "ui_helpers.h"
 
 ///////////////////// VARIABLES ////////////////////
+void ui_event_Screen1(lv_event_t * e);
 lv_obj_t * ui_Screen1;
 lv_obj_t * ui_Voltage;
 lv_obj_t * ui_Current;
 lv_obj_t * ui_Power;
+lv_obj_t * ui_CurDirection;
 
 ///////////////////// TEST LVGL SETTINGS ////////////////////
 #if LV_COLOR_DEPTH != 16
@@ -23,6 +25,14 @@ lv_obj_t * ui_Power;
 ///////////////////// ANIMATIONS ////////////////////
 
 ///////////////////// FUNCTIONS ////////////////////
+void ui_event_Screen1(lv_event_t * e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t * target = lv_event_get_target(e);
+    if(event_code == LV_EVENT_SCREEN_LOADED) {
+        main_screen_init(e);
+    }
+}
 
 ///////////////////// SCREENS ////////////////////
 void ui_Screen1_screen_init(void)
@@ -37,6 +47,8 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_y(ui_Voltage, -25);
     lv_obj_set_align(ui_Voltage, LV_ALIGN_CENTER);
     lv_label_set_text(ui_Voltage, "0.0000V");
+    lv_obj_set_style_text_color(ui_Voltage, lv_color_hex(0x00FF23), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui_Voltage, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_Voltage, &ui_font_SourceHanMono20, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_Current = lv_label_create(ui_Screen1);
@@ -46,6 +58,8 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_y(ui_Current, 0);
     lv_obj_set_align(ui_Current, LV_ALIGN_CENTER);
     lv_label_set_text(ui_Current, "0.0000A");
+    lv_obj_set_style_text_color(ui_Current, lv_color_hex(0xE0FF04), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui_Current, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_Current, &ui_font_SourceHanMono20, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_Power = lv_label_create(ui_Screen1);
@@ -55,7 +69,22 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_y(ui_Power, 25);
     lv_obj_set_align(ui_Power, LV_ALIGN_CENTER);
     lv_label_set_text(ui_Power, "0.0000W");
+    lv_obj_set_style_text_color(ui_Power, lv_color_hex(0xFF04DB), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui_Power, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_Power, &ui_font_SourceHanMono20, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_CurDirection = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_CurDirection, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_CurDirection, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_CurDirection, 50);
+    lv_obj_set_y(ui_CurDirection, 25);
+    lv_obj_set_align(ui_CurDirection, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_CurDirection, "<---");
+    lv_obj_set_style_text_color(ui_CurDirection, lv_color_hex(0x5168F8), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui_CurDirection, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_CurDirection, &ui_font_SourceHanMono20, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    lv_obj_add_event_cb(ui_Screen1, ui_event_Screen1, LV_EVENT_ALL, NULL);
 
 }
 

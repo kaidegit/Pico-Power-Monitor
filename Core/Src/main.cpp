@@ -29,6 +29,8 @@ void main_task(void *para) {
     auto vol_filter = Filter();
     auto cur_filter = Filter();
 
+    auto cur_direction_state = uint8_t(0);
+
     while (1) {
         auto vol = ina.GetVoltage();
         auto cur = ina.GetCurrent();
@@ -78,6 +80,27 @@ void main_task(void *para) {
         lv_label_set_text(ui_Voltage, vol_buf);
         lv_label_set_text(ui_Current, cur_buf);
         lv_label_set_text(ui_Power, power_buf);
+        switch (cur_direction_state) {
+            case 0 ... 5:
+                lv_label_set_text(ui_CurDirection, negative ? ">---" : "---<");
+                cur_direction_state++;
+                break;
+            case 6 ... 10:
+                lv_label_set_text(ui_CurDirection, negative ? "->--" : "--<-");
+                cur_direction_state++;
+                break;
+            case 11 ... 15:
+                lv_label_set_text(ui_CurDirection, negative ? "-->-" : "-<--");
+                cur_direction_state++;
+                break;
+            case 16 ... 20:
+                lv_label_set_text(ui_CurDirection, negative ? "--->" : "<---");
+                cur_direction_state++;
+                break;
+            default:
+                cur_direction_state = 0;
+                break;
+        }
         xSemaphoreGive(lv_lock);
 
         vTaskDelay(200);

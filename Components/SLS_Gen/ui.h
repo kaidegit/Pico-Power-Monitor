@@ -22,11 +22,14 @@ extern "C" {
 #include "lvgl.h"
 #endif
 
+void ui_event_Screen1(lv_event_t * e);
 extern lv_obj_t * ui_Screen1;
 extern lv_obj_t * ui_Voltage;
 extern lv_obj_t * ui_Current;
 extern lv_obj_t * ui_Power;
+extern lv_obj_t * ui_CurDirection;
 
+void main_screen_init(lv_event_t * e);
 
 
 
