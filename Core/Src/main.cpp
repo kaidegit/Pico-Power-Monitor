@@ -34,26 +34,45 @@ void main_task(void *para) {
         auto cur = ina.GetCurrent();
         vol = vol_filter.out_10x(vol);  // unit:0.1mV 0.0001V
         cur = cur_filter.out_10x(cur);  // unit:0.1mA 0.0001A
+        // 在1ma内忽略
+        if ((-10 <= cur) && (cur <= 10)) {
+            cur = 0;
+        }
+        auto negative = cur < 0;
+        cur = negative ? -cur : cur;
+
         auto power = int32_t(uint64_t(vol) * cur / 10000);   // unit:0.1mW 0.0001W
         elog_i(TAG, "get voltage : %dmv, current : %dma, power : %dmw",
                vol / 10, cur / 10, power / 10);
-        // TODO 考虑负数
-        // TODO 考虑两位整数
-        // TODO 功率考虑多位整数
-        // TODO 小数位
         // 最后一位直接通过滑动均值滤波取得
         char vol_buf[32];
         auto vol_int = vol / 10000;
         auto vol_dec = vol % 10000;
-        snprintf(vol_buf, sizeof(vol_buf), "%01d.%04dV", vol_int, vol_dec);
+        if (vol_int < 10) {
+            snprintf(vol_buf, sizeof(vol_buf), "%01d.%04dV", vol_int, vol_dec);
+        } else if (vol_int < 100) {
+            snprintf(vol_buf, sizeof(vol_buf), "%02d.%03dV", vol_int, vol_dec / 10);
+        }
+
         char cur_buf[32];
         auto cur_int = cur / 10000;
         auto cur_dec = cur % 10000;
-        snprintf(cur_buf, sizeof(cur_buf), "%01d.%04dA", cur_int, cur_dec);
+        if (cur_int < 10) {
+            snprintf(cur_buf, sizeof(cur_buf), "%01d.%04dA", cur_int, cur_dec);
+        } else if (cur_int < 100) {
+            snprintf(cur_buf, sizeof(cur_buf), "%02d.%03dA", cur_int, cur_dec / 10);
+        }
+
         char power_buf[32];
         auto power_int = power / 10000;
-        auto power_dec = (power % 10000) / 10;
-        snprintf(power_buf, sizeof(power_buf), "%02d.%03dW", power_int, power_dec);
+        auto power_dec = power % 10000;
+        if (power_int < 10) {
+            snprintf(power_buf, sizeof(power_buf), "%01d.%04dW", power_int, power_dec);
+        } else if (power_int < 100) {
+            snprintf(power_buf, sizeof(power_buf), "%02d.%03dW", power_int, power_dec / 10);
+        } else if (power_int < 1000) {
+            snprintf(power_buf, sizeof(power_buf), "%03d.%02dW", power_int, power_dec / 100);
+        }
 
         xSemaphoreTake(lv_lock, portMAX_DELAY);
         lv_label_set_text(ui_Voltage, vol_buf);

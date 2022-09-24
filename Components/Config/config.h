@@ -27,6 +27,6 @@
 #define SCREEN_MOSI 19
 #define SCREEN_RES 21
 // TODO 暂时飞线到IO0
-#define SCREEN_DC 0
+#define SCREEN_DC 20
 
 #endif //PICO_POWER_MONITOR_CONFIG_H
